@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "origin" {
     sid = "S3GetObjectForCloudFront"
 
     actions   = ["s3:GetObject"]
-    resources = ["arn:aws:s3:::$${bucket_name}$${origin_path}*"]
+    resources = ["arn:aws-cn:s3:::$${bucket_name}$${origin_path}*"]
 
     principals {
       type        = "AWS"
@@ -56,7 +56,7 @@ data "aws_iam_policy_document" "origin" {
     sid = "S3ListBucketForCloudFront"
 
     actions   = ["s3:ListBucket"]
-    resources = ["arn:aws:s3:::$${bucket_name}"]
+    resources = ["arn:aws-cn:s3:::$${bucket_name}"]
 
     principals {
       type        = "AWS"
@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "origin_website" {
     sid = "S3GetObjectForCloudFront"
 
     actions   = ["s3:GetObject"]
-    resources = ["arn:aws:s3:::$${bucket_name}$${origin_path}*"]
+    resources = ["arn:aws-cn:s3:::$${bucket_name}$${origin_path}*"]
 
     principals {
       type        = "AWS"
@@ -198,7 +198,7 @@ resource "aws_cloudfront_distribution" "default" {
     }
   }
 
-  aliases = var.acm_certificate_arn != "" ? var.aliases : []
+  aliases = (var.acm_certificate_arn != "" || var.iam_certificate_id != "") ? var.aliases : []
 
   origin {
     domain_name = local.bucket_domain_name
@@ -242,9 +242,10 @@ resource "aws_cloudfront_distribution" "default" {
 
   viewer_certificate {
     acm_certificate_arn            = var.acm_certificate_arn
-    ssl_support_method             = var.acm_certificate_arn == "" ? "" : "sni-only"
+    ssl_support_method             = (var.acm_certificate_arn == "" && var.iam_certificate_id == "") ? "" : "sni-only"
     minimum_protocol_version       = var.minimum_protocol_version
-    cloudfront_default_certificate = var.acm_certificate_arn == "" ? true : false
+    cloudfront_default_certificate = (var.acm_certificate_arn == "" && var.iam_certificate_id == "") ? true : false
+    iam_certificate_id             = var.iam_certificate_id
   }
 
   default_cache_behavior {

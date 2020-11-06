@@ -417,3 +417,7 @@ variable "cloudfront_origin_access_identity_path" {
   default     = ""
   description = "Existing cloudfront origin access identity path used in the cloudfront distribution's s3_origin_config content"
 }
+
+variable "iam_certificate_id" {
+  type        = string
+}
