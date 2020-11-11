@@ -174,7 +174,7 @@ locals {
   )
 
   bucket_domain_name = (var.use_regional_s3_endpoint || var.website_enabled) ? format(
-    var.website_enabled ? "%s.s3-website%s%s.amazonaws.com" : "%s.s3%s%s.amazonaws.com",
+    var.website_enabled ? "%s.s3-website%s%s.amazonaws.com.cn" : "%s.s3%s%s.amazonaws.com.cn",
     local.bucket,
     (var.website_enabled && contains(local.regions_s3_website_use_dash, data.aws_s3_bucket.selected.region)) ? "-" : ".",
     data.aws_s3_bucket.selected.region,
