@@ -57,7 +57,7 @@ locals {
     local.lookup_cf_log_bucket ? data.aws_s3_bucket.cf_logs[0].bucket_domain_name : module.logs.bucket_domain_name
   ) : ""
 
-  use_default_acm_certificate = var.acm_certificate_arn == ""
+  use_default_acm_certificate = var.iam_certificate_id == ""
   minimum_protocol_version    = var.minimum_protocol_version == "" ? (local.use_default_acm_certificate ? "TLSv1" : "TLSv1.2_2019") : var.minimum_protocol_version
 
   website_config = {
@@ -346,7 +346,7 @@ resource "aws_cloudfront_distribution" "default" {
     }
   }
 
-  aliases = var.acm_certificate_arn != "" ? concat(var.aliases, var.external_aliases) : []
+  aliases = var.iam_certificate_id != "" ? concat(var.aliases, var.external_aliases) : []
 
   dynamic "origin_group" {
     for_each = var.origin_groups
@@ -438,7 +438,7 @@ resource "aws_cloudfront_distribution" "default" {
   }
 
   viewer_certificate {
-    acm_certificate_arn            = var.acm_certificate_arn
+    iam_certificate_id            = var.iam_certificate_id
     ssl_support_method             = local.use_default_acm_certificate ? "" : "sni-only"
     minimum_protocol_version       = local.minimum_protocol_version
     cloudfront_default_certificate = local.use_default_acm_certificate

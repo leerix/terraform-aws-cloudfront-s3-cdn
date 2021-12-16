@@ -4,12 +4,6 @@ variable "extra_origin_attributes" {
   description = "Additional attributes to put onto the origin label"
 }
 
-variable "acm_certificate_arn" {
-  type        = string
-  description = "Existing ACM Certificate ARN"
-  default     = ""
-}
-
 variable "minimum_protocol_version" {
   type        = string
   description = <<-EOT
@@ -654,4 +648,9 @@ variable "allow_ssl_requests_only" {
   type        = bool
   default     = true
   description = "Set to `true` to require requests to use Secure Socket Layer (HTTPS/SSL). This will explicitly deny access to HTTP requests"
+}
+
+variable "iam_certificate_id" {
+  type = string
+  default = ""
 }
